@@ -12,7 +12,7 @@ rescale_coef = 1.5;
 diff_thresh  = 50/255;
 erode_size   = 2;
 dilate_size  = 6;
-t = 20;
+t = 10;
 
 %Initialize Boards
 play_mat = zeros(3);
@@ -58,7 +58,7 @@ x_threshold = center(1,4)/3;
 
 status = 0;
 while(status==0)    
-    t = 20;
+    t = 10;
     disp(['You have ',num2str(t),' seconds left'])
     while t~=0
         t=t-1;
