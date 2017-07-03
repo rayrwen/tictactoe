@@ -7,23 +7,24 @@ TicTacToe = zeros(3,3);
 
 %Thresholds 
 paper_thresh = 0.65;
-black_thresh = 0.6275;
-rescale_coef = 1.25;
+black_thresh = 0.60;
+rescale_coef = 1.5;
 diff_thresh  = 50/255;
 erode_size   = 2;
 dilate_size  = 6;
-time_per_move = 10;
+t = 20;
 
 %Initialize Boards
 play_mat = zeros(3);
 comp_mat = zeros(3);
 
 %Initialize Camera
-cam=webcam(1);
+cam=webcam(2);
 
-
+count = 0;
 %TicTacToe Initialization Assumes Board is already drawn
 board_init = snapshot(cam);
+imwrite(board_init, ['image',num2str(count),'.bmp'])
 
 board_init = preprocess_img(board_init);
 
@@ -36,7 +37,7 @@ zoomed_past = uint8(board_init(start_y:end_y,start_x:end_x));
 
 % GrayScale to BW
 board = double(zoomed_past)./255;
-boardBW = imbinarize(board,black_thresh);
+boardBW = im2bw(board,black_thresh);
 boardBW = uint8(boardBW*255);
 boardBW = imcomplement(boardBW);
 
@@ -56,9 +57,9 @@ x_threshold = center(1,4)/3;
 
 
 status = 0;
-while(status==0)
-    disp(['You have ',num2str(time_per_move),' seconds left'])
-    t=10;
+while(status==0)    
+    t = 20;
+    disp(['You have ',num2str(t),' seconds left'])
     while t~=0
         t=t-1;
         pause(1)
@@ -66,6 +67,8 @@ while(status==0)
     end
     disp('Reading Move')
     image_update = snapshot(cam);
+    count = count + 1;
+    imwrite(image_update, ['image',num2str(count),'.bmp'])
     
     % PreProcessing
     image_update = preprocess_img(image_update);
@@ -76,7 +79,7 @@ while(status==0)
 
     % BW Difference between current and previous image
     board = double(zoomed_past-zoomed_current)./255;
-    boardBW = imbinarize(board,diff_thresh);
+    boardBW = im2bw(board,diff_thresh);
     boardBW = uint8(boardBW*255);
 
     % Morphological Filtering (erode to remove any noise + dilate for
@@ -100,17 +103,24 @@ while(status==0)
 
     % Update Boards
     play_mat(x,y) = 1;
+    status = see_who_wins(play_mat, comp_mat);
+    if status ~= 0
+      fprintf('Status == %d\n Game over\n', status);
+      break;
+    end
     [play_mat, comp_mat, status] = next_step(play_mat, comp_mat);
     
     if shape_det == 1
-        TicTacToe = play_mat + 2.*comp_mat;
+        play_shape = 'X'; comp_shape = 'O';
     else
-        TicTacToe = comp_mat + 2.*play_mat;
+        play_shape = 'O'; comp_shape = 'X';
     end
     
-    make_fig(play_mat, comp_mat);
-    % RAY: WHY STATUS = 1 HERE?
-    status = 1;
+    make_fig(play_mat, comp_mat, play_shape, comp_shape);
+    zoomed_past = zoomed_current;
 end
+
+make_fig(play_mat, comp_mat, play_shape, comp_shape);
+
 
     

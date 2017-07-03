@@ -13,7 +13,7 @@ mask = double(imgaussfilt(img,10));
 % imshow(uint8(mask))
 mask = mask./255;
 %Threshold might change according to lighting
-BW = imbinarize(mask,paper_thresh);
+BW = im2bw(mask,paper_thresh);
 % figure()
 % imshow(BW*255)
 
@@ -40,10 +40,10 @@ n2=round(stats.MinorAxisLength(1)/rescale_coef);
 center = stats.Centroid;
 center = round(center(1,:));
 
-start_x = center(1)-m2/2;
-end_x = start_x+m2-1;
-start_y = center(2)-n2/2;
-end_y = start_y+n2-1;
+start_x = round(center(1)-m2/2);
+end_x = round(start_x+m2-1);
+start_y = round(center(2)-n2/2);
+end_y = round(start_y+n2-1);
 
 
 
