@@ -100,7 +100,7 @@ while(status==0)
 
     % Update Boards
     play_mat(x,y) = 1;
-    [play_mat, comp_mat, status] = next_step(play_mat, comp_mat)
+    [play_mat, comp_mat, status] = next_step(play_mat, comp_mat);
     
     if shape_det == 1
         TicTacToe = play_mat + 2.*comp_mat;
@@ -108,7 +108,8 @@ while(status==0)
         TicTacToe = comp_mat + 2.*play_mat;
     end
     
-    
+    make_fig(play_mat, comp_mat);
+    % RAY: WHY STATUS = 1 HERE?
     status = 1;
 end
 
