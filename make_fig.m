@@ -1,10 +1,10 @@
 function [] = make_fig(play_mat, comp_mat)
-  close all
+
 
   % play_mat = [1,0,0;0,0,1;0,0,1];
   % comp_mat = [0,1,0;0,1,0;0,0,0];
 
-  figure
+  figure(99)
   axis off
   hold all
   pos = [0.2, 0.5, 0.8];

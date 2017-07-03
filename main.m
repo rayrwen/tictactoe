@@ -6,9 +6,9 @@ close all;
 TicTacToe = zeros(3,3);
 
 %Thresholds 
-paper_thresh = 0.65;
+paper_thresh = 0.75;
 black_thresh = 0.6275;
-rescale_coef = 1.25;
+rescale_coef = 1.5;
 diff_thresh  = 50/255;
 erode_size   = 2;
 dilate_size  = 6;
@@ -18,13 +18,17 @@ time_per_move = 10;
 play_mat = zeros(3);
 comp_mat = zeros(3);
 
+%Initialize CameraCounter
+cam_count = 0;
+
 %Initialize Camera
-cam=webcam(1);
+% cam=webcam(1);
 
 
 %TicTacToe Initialization Assumes Board is already drawn
-board_init = snapshot(cam);
-
+% board_init = snapshot(cam);
+% imwrite(board_init,['image_',num2str(cam_count),'.bmp'])
+board_init = imread('image_0.bmp');
 board_init = preprocess_img(board_init);
 
 % Extract Paper Information
@@ -57,6 +61,8 @@ x_threshold = center(1,4)/3;
 
 status = 0;
 while(status==0)
+%     cam_count = cam_count+1;
+%     image_update = imread(['image_',num2str(cam_count),'.bmp']);
     disp(['You have ',num2str(time_per_move),' seconds left'])
     t=10;
     while t~=0
@@ -66,6 +72,8 @@ while(status==0)
     end
     disp('Reading Move')
     image_update = snapshot(cam);
+    imwrite(image_update,['image_',num2str(cam_count),'.bmp'])
+
     
     % PreProcessing
     image_update = preprocess_img(image_update);
@@ -81,9 +89,9 @@ while(status==0)
 
     % Morphological Filtering (erode to remove any noise + dilate for
     % structures)
-    se = strel('square',erode_size);
+    se = strel('square',erode_size*2);
     boardBW = imerode(boardBW,se);
-    se = strel('square',dilate_size);
+    se = strel('square',dilate_size*2);
     boardBW = imdilate(boardBW,se);
 
 
@@ -100,17 +108,19 @@ while(status==0)
 
     % Update Boards
     play_mat(x,y) = 1;
-    [play_mat, comp_mat, status] = next_step(play_mat, comp_mat);
+    [play_mat, comp_mat, status] = next_step(play_mat, comp_mat)
     
     if shape_det == 1
         TicTacToe = play_mat + 2.*comp_mat;
     else
         TicTacToe = comp_mat + 2.*play_mat;
     end
+    TicTacToe_show = flipud(fliplr(TicTacToe))
+    make_fig(play_mat,comp_mat)
+    pause(5)
     
-    make_fig(play_mat, comp_mat);
-    % RAY: WHY STATUS = 1 HERE?
-    status = 1;
+    zoomed_past = zoomed_current;
+    
 end
 
     
