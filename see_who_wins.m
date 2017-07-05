@@ -3,12 +3,22 @@ function status = see_who_wins(play_mat, comp_mat)
   %           1 : player wins
   %           2 : computer wins
   %           3 : draw
-  % 
+  %           -1: not valid
   % For now: assume we have n x n tic-tac-toe board,
   % i.e. w == h
   [w, h] = size(play_mat);
   
   status = 0;
+  
+%   Check if the status is valid
+  for i = 1:w
+    for j = 1:h
+      if play_mat(i,j) == 1 && comp_mat(i,j) == 1
+        status = -1;
+        return
+      end
+    end
+  end
 
 %   Check if the game is finished
   if play_mat + comp_mat == ones(w)
