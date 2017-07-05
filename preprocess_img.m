@@ -1,6 +1,6 @@
 function [ img ] = preprocess_img( img, noise )
 % pre-process image depending on noise
-% noise can be 'none', 'sp' or 'gau'
+% noise can be 'none', 'sp', 'gau', or 'sheer',
 
 if nargin == 1
   noise = 'none';
@@ -24,6 +24,17 @@ if strcmp(noise,'sp')
    % Gaussian filter
   img = imgaussfilt(img,1);
 end
+
+if strcmp(noise,'sheer')
+  % Median filter
+  img = medfilt2(img, [9 9]);
+end
+
+if strcmp(noise,'motion')
+  % No additional filtering
+  img = img;
+end
+
 
 end
 

@@ -7,6 +7,10 @@ TicTacToe = zeros(3,3);
 
 with_webcam = false;
 %%% Change this for experimenting with different kinds of noise
+% Suitable noise choices are gau, sp, sheer, motion or none.
+% Before selecting a noise, run the add_noise.m function, to generate the
+% noises on the input images and save them. 
+
 noise = 'gau';
 noise_level = '0015';
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -20,10 +24,15 @@ erode_size   = 2;
 dilate_size  = 6;
 time_per_move = 5;
 
+if strcmp(noise,'motion')
+    black_thresh = 0.67;
+    diff_thresh  = 0.1;
+end
+
 % Initialize Boards
 play_mat = zeros(3);
 comp_mat = zeros(3);
-img_count = 0;
+img_count = 1;
 
 
 % Initialize Camera
@@ -60,9 +69,8 @@ imshowpair(board_init, boardBW, 'montage')
 title('TicTacToe Board')
 
 % Get Board Information
-center = GetBoardDimensions(boardBW);
-y_threshold = center(1,3)/3;
-x_threshold = center(1,4)/3;
+[center y_threshold x_threshold] = GetBoardDimensions(boardBW);
+
 
 status = 0;
 while(status==0)    
