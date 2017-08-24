@@ -1,2 +1,4 @@
 REVIEWBOARD_URL = 'http://localhost/'
 REPOSITORY = 'tictactoe'
+REPOSITORY_TYPE = "git"
+TRACKING_BRANCH = "origin/master"
